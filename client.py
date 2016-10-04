@@ -1,17 +1,24 @@
 import asyncio
+import tkinter as tk
 
 import arcade
 import websockets
 
-# Size of the screen
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 600
 
-def on_draw(delta_time):
-    arcade.start_render()
-    arcade.draw_rectangle_filled(0, 0,      # position
-                                 50, 50,    # size
-                                 arcade.color.ALIZARIN_CRIMSON)
+# GRAPHICS
+root = tk.Tk()
+canvas = tk.Canvas(root, width=200, height=200, borderwidth=0, highlightthickness=0, bg="black")
+canvas.grid()
+
+def _create_circle(self, x, y, r, **kwargs):
+    return self.create_oval(x-r, y-r, x+r, y+r, **kwargs)
+tk.Canvas.create_circle = _create_circle
+
+canvas.create_circle(100, 120, 50, fill="blue", outline="#DDD", width=4)
+root.mainloop()
+
+
+# NETWORK
 
 async def hello():
     async with websockets.connect('ws://localhost:8765') as websocket:
@@ -24,17 +31,6 @@ async def hello():
         print("< {}".format(greeting))
 
 
-def main():
-    arcade.open_window("Rectangle", SCREEN_WIDTH, SCREEN_HEIGHT)
-    arcade.set_background_color(arcade.color.WHITE)
+# if __name__ == "__main__":
+    # asyncio.get_event_loop().run_until_complete(hello())
 
-    # Tell the computer to call the draw command at the specified interval.
-    arcade.schedule(on_draw, 1 / 80)
-
-    # Run the program
-    arcade.run()
-
-
-if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(hello())
-    main()
