@@ -6,6 +6,7 @@ import tkinter as tk
 
 from client_objs import BaseObject
 
+LOOP_DELAY = 0.05  # ms
 
 # GRAPHICS
 
@@ -15,20 +16,27 @@ canvas.grid()
 BaseObject().render(canvas)
 
 @asyncio.coroutine
-def run_tk(root, interval=0.05):
+def run_tk(root):
     '''
     Run a tkinter app in an asyncio event loop.
     '''
     try:
         while True:
             root.update()
-            yield from asyncio.sleep(interval)
+            yield from asyncio.sleep(LOOP_DELAY)
     except tk.TclError as e:
         if "application has been destroyed" not in e.args[0]:
             raise
 
 
+@asyncio.coroutine
+def logic():
+    while True:
+        print('test')
+        yield from asyncio.sleep(LOOP_DELAY)
+
 def main():
+    asyncio.ensure_future(logic())
     yield from run_tk(root)
 
 
