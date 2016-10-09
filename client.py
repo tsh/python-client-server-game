@@ -13,7 +13,7 @@ LOOP_DELAY = 0.05  # ms
 root = tk.Tk()
 canvas = tk.Canvas(root, width=800, height=600, borderwidth=0, highlightthickness=0, bg="black")
 canvas.grid()
-BaseObject().render(canvas)
+circle = BaseObject()
 
 @asyncio.coroutine
 def run_tk(root):
@@ -23,6 +23,7 @@ def run_tk(root):
     try:
         while True:
             root.update()
+            circle.render(canvas)
             yield from asyncio.sleep(LOOP_DELAY)
     except tk.TclError as e:
         if "application has been destroyed" not in e.args[0]:
@@ -33,6 +34,7 @@ def run_tk(root):
 def logic():
     while True:
         print('test')
+        circle.update()
         yield from asyncio.sleep(LOOP_DELAY)
 
 def main():

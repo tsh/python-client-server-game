@@ -6,5 +6,10 @@ class BaseObject(object):
         self.y = y
         self.r = r
 
+        self.dx = 10
+
     def render(self, canvas):
         canvas.create_oval(self.x-self.r, self.y-self.r, self.x+self.r, self.y+self.r, fill="blue", outline="#DDD", width=4)
+
+    def update(self):
+        self.x += self.dx
