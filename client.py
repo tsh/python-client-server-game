@@ -23,6 +23,7 @@ def run_tk(root):
     try:
         while True:
             root.update()
+            canvas.delete("all")
             circle.render(canvas)
             yield from asyncio.sleep(LOOP_DELAY)
     except tk.TclError as e:
