@@ -1,5 +1,6 @@
-import random
+import math
 import pyglet
+from pyglet.window import mouse
 
 
 class Primitive(object):
@@ -80,5 +81,12 @@ game = Game()
 def on_draw():
     window.clear()
     game.draw()
+
+@window.event
+def on_mouse_press(x, y, button, modifiers):
+    if button == mouse.LEFT:
+        cx = x / 100
+        cy = y / 100
+        print('x: ', math.floor(cx), 'y: ', math.floor(cy))
 
 pyglet.app.run()
