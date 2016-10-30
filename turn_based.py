@@ -3,6 +3,12 @@ import pyglet
 from pyglet.window import mouse
 
 
+class Position(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+
 class Primitive(object):
     def __init__(self):
         self.SIZE = 100
@@ -45,13 +51,13 @@ class Map(Primitive):
 class Character(Primitive):
     def __init__(self):
         super().__init__()
-        self._is_selected = False
+        self.is_selected = False
 
     def toggle_selection(self):
-        self._is_selected = not self._is_selected
+        self.is_selected = not self.is_selected
 
     def draw(self, x, y, size, shrink_factor):
-        if self._is_selected:
+        if self.is_selected:
             self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, (0, 255, 0, 0))
             self._draw_rect(x + shrink_factor + 20 , y + shrink_factor + 20 , size - 40 , size - 40, (128, 0, 128, 0))
         else:
@@ -62,9 +68,10 @@ class Objects(Primitive):
     def __init__(self):
         super().__init__()
         self.shrink_factor = 15
-        self.map = [[0, 0, 0],
-                    [0, Character(), 0],
-                    [0, 0, 0]]
+        self.default_value = 0
+        self.map = [[self.default_value, self.default_value,    self.default_value],
+                    [self.default_value, Character(),           self.default_value],
+                    [self.default_value, self.default_value,    self.default_value]]
 
     def draw(self):
         for i, row in enumerate(reversed(self.map)):
@@ -75,12 +82,31 @@ class Objects(Primitive):
                 if not isinstance(tile, int):
                     tile.draw(x, y, size, self.shrink_factor)
 
+    def move(self, obj, tx, ty):
+        for i, row in enumerate(reversed(self.map)):
+            for j, tile in enumerate(row):
+                if tile is obj:
+                    print('tx: ', tx, 'ty: ', ty, 'i: ', i, 'j: ', j)
+                    self.map[i][j] = self.default_value
+                    self.map[tx][ty] = obj
+
+    def _get_selected_object(self):
+        for i, row in enumerate(reversed(self.map)):
+            for j, tile in enumerate(row):
+                if not isinstance(tile, int) and tile.is_selected:
+                    return tile
+        return None
+
     def clicked(self, x, y):
-        selection = self.map[x][y]
-        if not isinstance(selection, int):
-            selection.toggle_selection()
-
-
+        obj = self.map[x][y]
+        if not isinstance(obj, int):
+            # select clicked object
+            obj.toggle_selection()
+        else:
+            # if we have selected object, move him
+            obj = self._get_selected_object()
+            if obj:
+                self.move(obj, x, y)
 
 class Game(object):
     def __init__(self):
@@ -113,4 +139,4 @@ def on_mouse_press(x, y, button, modifiers):
 
 pyglet.app.run()
 
-# TODO: render selection, movement, game field boundries, map size, player object, enemy object, wall, cant move on wall.
+# TODO: movement, game field boundries, map size, player object, enemy object, wall, cant move on wall.
