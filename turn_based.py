@@ -15,6 +15,7 @@ class Primitive(object):
 
 class Map(Primitive):
     def __init__(self):
+        # TODO: 64x64
         super().__init__()
         self.map = [[1, 0, 1],
                     [0, 1, 0],
@@ -91,3 +92,5 @@ def on_mouse_press(x, y, button, modifiers):
         print('x: ', math.floor(cx), 'y: ', math.floor(cy))
 
 pyglet.app.run()
+
+# TODO: render selection, movement, map size, player object, enemy object, wall, cant move on wall.
