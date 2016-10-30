@@ -12,6 +12,12 @@ class Primitive(object):
         image = image_pattern.create_image(width, height)
         image.blit(x, y)
 
+    def get_clicked_tile_position(self, x, y):
+        tx = math.floor(x / 100)
+        ty = math.floor(y / 100)
+        return tx, ty
+
+
 
 class Map(Primitive):
     def __init__(self):
@@ -32,14 +38,20 @@ class Map(Primitive):
                     clr = (0, 0, 255, 0)
                 self._draw_rect(x, y, self.SIZE, self.SIZE, clr)
 
+    def clicked(self, x, y):
+        pass
+
 
 class Character(Primitive):
     def __init__(self):
         super().__init__()
-        self.is_selected = True
+        self._is_selected = False
+
+    def toggle_selection(self):
+        self._is_selected = not self._is_selected
 
     def draw(self, x, y, size, shrink_factor):
-        if self.is_selected:
+        if self._is_selected:
             self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, (0, 255, 0, 0))
             self._draw_rect(x + shrink_factor + 20 , y + shrink_factor + 20 , size - 40 , size - 40, (128, 0, 128, 0))
         else:
@@ -63,6 +75,10 @@ class Objects(Primitive):
                 if not isinstance(tile, int):
                     tile.draw(x, y, size, self.shrink_factor)
 
+    def clicked(self, x, y):
+        selection = self.map[x][y]
+        if not isinstance(selection, int):
+            selection.toggle_selection()
 
 
 
@@ -74,6 +90,12 @@ class Game(object):
     def draw(self):
         self.map.draw()
         self.objects.draw()
+
+    def on_left_click(self, x, y):
+        # Transform screen coordinates into tile
+        tx, ty = self.objects.get_clicked_tile_position(x, y)
+        self.map.clicked(tx, ty)
+        self.objects.clicked(tx, ty)
 
 
 window = pyglet.window.Window(width=800, height=600)
@@ -87,10 +109,8 @@ def on_draw():
 @window.event
 def on_mouse_press(x, y, button, modifiers):
     if button == mouse.LEFT:
-        cx = x / 100
-        cy = y / 100
-        print('x: ', math.floor(cx), 'y: ', math.floor(cy))
+        game.on_left_click(x, y)
 
 pyglet.app.run()
 
-# TODO: render selection, movement, map size, player object, enemy object, wall, cant move on wall.
+# TODO: render selection, movement, game field boundries, map size, player object, enemy object, wall, cant move on wall.
