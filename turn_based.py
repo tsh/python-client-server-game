@@ -39,7 +39,8 @@ class Character(Primitive):
 
     def draw(self, x, y, size, shrink_factor):
         if self.is_selected:
-            pass
+            self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, (0, 255, 0, 0))
+            self._draw_rect(x + shrink_factor + 20 , y + shrink_factor + 20 , size - 40 , size - 40, (128, 0, 128, 0))
         else:
             self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, (0, 255, 0, 0))
 
