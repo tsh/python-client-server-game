@@ -31,11 +31,24 @@ class Map(Primitive):
                 self._draw_rect(x, y, self.SIZE, self.SIZE, clr)
 
 
+class Character(Primitive):
+    def __init__(self):
+        super().__init__()
+        self.is_selected = True
+
+    def draw(self, x, y, size, shrink_factor):
+        if self.is_selected:
+            pass
+        else:
+            self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, (0, 255, 0, 0))
+
+
 class Objects(Primitive):
     def __init__(self):
         super().__init__()
+        self.shrink_factor = 15
         self.map = [[0, 0, 0],
-                    [0, 1, 0],
+                    [0, Character(), 0],
                     [0, 0, 0]]
 
     def draw(self):
@@ -43,10 +56,10 @@ class Objects(Primitive):
             for j, tile in enumerate(row):
                 x = j * self.SIZE
                 y = i * self.SIZE
-                self.shrink_factor = 15
                 size = self.SIZE - self.shrink_factor * 2
-                if tile == 1:
-                    self._draw_rect(x + self.shrink_factor , y + self.shrink_factor , size, size, (0, 255, 0, 0))
+                if not isinstance(tile, int):
+                    tile.draw(x, y, size, self.shrink_factor)
+
 
 
 
