@@ -8,6 +8,12 @@ class Position(object):
         self.x = x
         self.y = y
 
+    def __hash__(self):
+        return hash((self.x, self.y,))
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
 
 class Primitive(object):
     def __init__(self):
@@ -29,15 +35,14 @@ class Map(Primitive):
     def __init__(self):
         # TODO: 64x64
         super().__init__()
-        self.map = [[1, 0, 1],
-                    [0, 1, 0],
-                    [1, 0, 1]]
+        self.map = {Position(0, 0): 0, Position(1, 0): 1, Position(2, 0): 0,
+                    Position(0, 1): 1, Position(1, 1): 0, Position(2, 1): 1,
+                    Position(0, 2): 0, Position(1, 2): 1, Position(2, 2): 0}
 
     def draw(self):
-        for i, row in enumerate(reversed(self.map)):
-            for j, tile in enumerate(row):
-                x = j * self.SIZE
-                y = i * self.SIZE
+        for pos, tile in self.map.items():
+                x = pos.x * self.SIZE
+                y = pos.y * self.SIZE
                 if tile == 0:
                     clr = (255, 0, 0, 0)
                 elif tile == 1:
@@ -69,21 +74,20 @@ class Objects(Primitive):
         super().__init__()
         self.shrink_factor = 15
         self.default_value = 0
-        self.map = [[self.default_value, self.default_value,    self.default_value],
-                    [self.default_value, Character(),           self.default_value],
-                    [self.default_value, self.default_value,    self.default_value]]
+        self.map = {Position(0, 0): 0, Position(1, 0): 1,           Position(2, 0): 0,
+                    Position(0, 1): 1, Position(1, 1): Character(), Position(2, 1): 1,
+                    Position(0, 2): 0, Position(1, 2): 1,           Position(2, 2): 0}
 
     def draw(self):
-        for i, row in enumerate(reversed(self.map)):
-            for j, tile in enumerate(row):
-                x = j * self.SIZE
-                y = i * self.SIZE
-                size = self.SIZE - self.shrink_factor * 2
-                if not isinstance(tile, int):
-                    tile.draw(x, y, size, self.shrink_factor)
+        for pos, tile in self.map.items():
+            x = pos.x * self.SIZE
+            y = pos.y * self.SIZE
+            size = self.SIZE - self.shrink_factor * 2
+            if not isinstance(tile, int):
+                tile.draw(x, y, size, self.shrink_factor)
 
     def move(self, obj, tx, ty):
-        for i, row in enumerate(reversed(self.map)):
+        for i, row in enumerate(self.map):
             for j, tile in enumerate(row):
                 if tile is obj:
                     print('tx: ', tx, 'ty: ', ty, 'i: ', i, 'j: ', j)
@@ -91,14 +95,13 @@ class Objects(Primitive):
                     self.map[tx][ty] = obj
 
     def _get_selected_object(self):
-        for i, row in enumerate(reversed(self.map)):
-            for j, tile in enumerate(row):
-                if not isinstance(tile, int) and tile.is_selected:
-                    return tile
+        for pos, tile in self.map.items():
+            if not isinstance(tile, int) and tile.is_selected:
+                return tile
         return None
 
     def clicked(self, x, y):
-        obj = self.map[x][y]
+        obj = self.map[Position(x, y)]
         if not isinstance(obj, int):
             # select clicked object
             obj.toggle_selection()
@@ -107,6 +110,7 @@ class Objects(Primitive):
             obj = self._get_selected_object()
             if obj:
                 self.move(obj, x, y)
+
 
 class Game(object):
     def __init__(self):
