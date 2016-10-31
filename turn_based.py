@@ -20,7 +20,7 @@ class Position(object):
 
 class Primitive(object):
     def __init__(self):
-        self.SIZE = 100
+        self.SIZE = 48
 
     def _draw_rect(self, x, y, width, height, color):
         image_pattern = pyglet.image.SolidColorImagePattern(color=color)
@@ -38,9 +38,21 @@ class Map(Primitive):
     def __init__(self):
         # TODO: 64x64
         super().__init__()
-        self.map = {Position(0, 0): 0, Position(1, 0): 1, Position(2, 0): 0,
-                    Position(0, 1): 1, Position(1, 1): 0, Position(2, 1): 1,
-                    Position(0, 2): 0, Position(1, 2): 1, Position(2, 2): 0}
+        self.map = {
+            Position(0, 12): 0,     Position(1, 12): 1,         Position(2, 12): 0,     Position(3, 12): 0,     Position(4, 12): 0,     Position(5, 12): 0,     Position(6, 12): 0,     Position(7, 12): 0,     Position(8, 12): 0,     Position(9, 12): 0,     Position(10, 12): 0,        Position(11, 12): 0,
+            Position(0, 11): 1,     Position(1, 11): 0,         Position(2, 11): 1,     Position(3, 11): 0,     Position(4, 11): 0,     Position(5, 11): 0,     Position(6, 11): 0,     Position(7, 11): 0,     Position(8, 11): 0,     Position(9, 11): 0,     Position(10, 11): 0,        Position(11, 11): 0,
+            Position(0, 10): 0,     Position(1, 10): 1,         Position(2, 10): 0,     Position(3, 10): 0,     Position(4, 10): 0,     Position(5, 10): 0,     Position(6, 10): 0,     Position(7, 10): 0,     Position(8, 10): 0,     Position(9, 10): 0,     Position(10, 10): 0,        Position(11, 10): 0,
+            Position(0, 9): 0,      Position(1, 9): 0,          Position(2, 9): 0,      Position(3, 9): 0,      Position(4, 9): 0,      Position(5, 9): 0,      Position(6, 9): 0,      Position(7, 9): 0,      Position(8, 9): 0,      Position(9, 9): 0,      Position(10, 9): 0,         Position(11, 9): 0,
+            Position(0, 8): 0,      Position(1, 8): 0,          Position(2, 8): 0,      Position(3, 8): 0,      Position(4, 8): 0,      Position(5, 8): 0,      Position(6, 8): 0,      Position(7, 8): 0,      Position(8, 8): 0,      Position(9, 8): 0,      Position(10, 8): 0,         Position(11, 8): 0,
+            Position(0, 7): 0,      Position(1, 7): 0,          Position(2, 7): 0,      Position(3, 7): 0,      Position(4, 7): 0,      Position(5, 7): 0,      Position(6, 7): 0,      Position(7, 7): 0,      Position(8, 7): 0,      Position(9, 7): 0,      Position(10, 7): 0,         Position(11, 7): 0,
+            Position(0, 6): 0,      Position(1, 6): 0,          Position(2, 6): 0,      Position(3, 6): 0,      Position(4, 6): 0,      Position(5, 6): 0,      Position(6, 6): 0,      Position(7, 6): 0,      Position(8, 6): 0,      Position(9, 6): 0,      Position(10, 6): 0,         Position(11, 6): 0,
+            Position(0, 5): 0,      Position(1, 5): 0,          Position(2, 5): 0,      Position(3, 5): 0,      Position(4, 5): 0,      Position(5, 5): 0,      Position(6, 5): 0,      Position(7, 5): 0,      Position(8, 5): 0,      Position(9, 5): 0,      Position(10, 5): 0,         Position(11, 5): 0,
+            Position(0, 4): 0,      Position(1, 4): 0,          Position(2, 4): 0,      Position(3, 4): 0,      Position(4, 4): 0,      Position(5, 4): 0,      Position(6, 4): 0,      Position(7, 4): 0,      Position(8, 4): 0,      Position(9, 4): 0,      Position(10, 4): 0,         Position(11, 4): 0,
+            Position(0, 3): 0,      Position(1, 3): 0,          Position(2, 3): 0,      Position(3, 3): 0,      Position(4, 3): 0,      Position(5, 3): 0,      Position(6, 3): 0,      Position(7, 3): 0,      Position(8, 3): 0,      Position(9, 3): 0,      Position(10, 3): 0,         Position(11, 3): 0,
+            Position(0, 2): 1,      Position(1, 2): 1,          Position(2, 2): 1,      Position(3, 2): 0,      Position(4, 2): 0,      Position(5, 2): 0,      Position(6, 2): 0,      Position(7, 2): 0,      Position(8, 2): 0,      Position(9, 2): 0,      Position(10, 2): 0,         Position(11, 2): 0,
+            Position(0, 1): 1,      Position(1, 1): 0,          Position(2, 1): 1,      Position(3, 1): 0,      Position(4, 1): 0,      Position(5, 1): 0,      Position(6, 1): 0,      Position(7, 1): 0,      Position(8, 1): 0,      Position(9, 1): 0,      Position(10, 1): 0,         Position(11, 1): 0,
+            Position(0, 0): 1,      Position(1, 0): 1,          Position(2, 0): 1,      Position(3, 0): 0,      Position(4, 0): 0,      Position(5, 0): 0,      Position(6, 0): 0,      Position(7, 0): 0,      Position(8, 0): 0,      Position(9, 0): 0,      Position(10, 0): 0,         Position(11, 0): 1
+        }
 
     def draw(self):
         for pos, tile in self.map.items():
@@ -77,9 +89,21 @@ class Objects(Primitive):
         super().__init__()
         self.shrink_factor = 15
         self.default_value = 0
-        self.map = {Position(0, 0): 0, Position(1, 0): 1,           Position(2, 0): 0,
-                    Position(0, 1): 1, Position(1, 1): Character(), Position(2, 1): 1,
-                    Position(0, 2): 0, Position(1, 2): 1,           Position(2, 2): 0}
+        self.map = {
+            Position(0, 12): 0,     Position(1, 12): 0,         Position(2, 12): 0,     Position(3, 12): 0,     Position(4, 12): 0,     Position(5, 12): 0,     Position(6, 12): 0,     Position(7, 12): 0,     Position(8, 12): 0,     Position(9, 12): 0,     Position(10, 12): 0,        Position(11, 12): 0,
+            Position(0, 11): 0,     Position(1, 11): 0,         Position(2, 11): 0,     Position(3, 11): 0,     Position(4, 11): 0,     Position(5, 11): 0,     Position(6, 11): 0,     Position(7, 11): 0,     Position(8, 11): 0,     Position(9, 11): 0,     Position(10, 11): 0,        Position(11, 11): 0,
+            Position(0, 10): 0,     Position(1, 10): 0,         Position(2, 10): 0,     Position(3, 10): 0,     Position(4, 10): 0,     Position(5, 10): 0,     Position(6, 10): 0,     Position(7, 10): 0,     Position(8, 10): 0,     Position(9, 10): 0,     Position(10, 10): 0,        Position(11, 10): 0,
+            Position(0, 9): 0,      Position(1, 9): 0,          Position(2, 9): 0,      Position(3, 9): 0,      Position(4, 9): 0,      Position(5, 9): 0,      Position(6, 9): 0,      Position(7, 9): 0,      Position(8, 9): 0,      Position(9, 9): 0,      Position(10, 9): 0,         Position(11, 9): 0,
+            Position(0, 8): 0,      Position(1, 8): 0,          Position(2, 8): 0,      Position(3, 8): 0,      Position(4, 8): 0,      Position(5, 8): 0,      Position(6, 8): 0,      Position(7, 8): 0,      Position(8, 8): 0,      Position(9, 8): 0,      Position(10, 8): 0,         Position(11, 8): 0,
+            Position(0, 7): 0,      Position(1, 7): 0,          Position(2, 7): 0,      Position(3, 7): 0,      Position(4, 7): 0,      Position(5, 7): 0,      Position(6, 7): 0,      Position(7, 7): 0,      Position(8, 7): 0,      Position(9, 7): 0,      Position(10, 7): 0,         Position(11, 7): 0,
+            Position(0, 6): 0,      Position(1, 6): 0,          Position(2, 6): 0,      Position(3, 6): 0,      Position(4, 6): 0,      Position(5, 6): 0,      Position(6, 6): 0,      Position(7, 6): 0,      Position(8, 6): 0,      Position(9, 6): 0,      Position(10, 6): 0,         Position(11, 6): 0,
+            Position(0, 5): 0,      Position(1, 5): 0,          Position(2, 5): 0,      Position(3, 5): 0,      Position(4, 5): 0,      Position(5, 5): 0,      Position(6, 5): 0,      Position(7, 5): 0,      Position(8, 5): 0,      Position(9, 5): 0,      Position(10, 5): 0,         Position(11, 5): 0,
+            Position(0, 4): 0,      Position(1, 4): 0,          Position(2, 4): 0,      Position(3, 4): 0,      Position(4, 4): 0,      Position(5, 4): 0,      Position(6, 4): 0,      Position(7, 4): 0,      Position(8, 4): 0,      Position(9, 4): 0,      Position(10, 4): 0,         Position(11, 4): 0,
+            Position(0, 3): 0,      Position(1, 3): 0,          Position(2, 3): 0,      Position(3, 3): 0,      Position(4, 3): 0,      Position(5, 3): 0,      Position(6, 3): 0,      Position(7, 3): 0,      Position(8, 3): 0,      Position(9, 3): 0,      Position(10, 3): 0,         Position(11, 3): 0,
+            Position(0, 2): 0,      Position(1, 2): 0,          Position(2, 2): 0,      Position(3, 2): 0,      Position(4, 2): 0,      Position(5, 2): 0,      Position(6, 2): 0,      Position(7, 2): 0,      Position(8, 2): 0,      Position(9, 2): 0,      Position(10, 2): 0,         Position(11, 2): 0,
+            Position(0, 1): 0,      Position(1, 1): Character(),Position(2, 1): 0,      Position(3, 1): 0,      Position(4, 1): 0,      Position(5, 1): 0,      Position(6, 1): 0,      Position(7, 1): 0,      Position(8, 1): 0,      Position(9, 1): 0,      Position(10, 1): 0,         Position(11, 1): 0,
+            Position(0, 0): 0,      Position(1, 0): 0,          Position(2, 0): 0,      Position(3, 0): 0,      Position(4, 0): 0,      Position(5, 0): 0,      Position(6, 0): 0,      Position(7, 0): 0,      Position(8, 0): 0,      Position(9, 0): 0,      Position(10, 0): 0,         Position(11, 0): 1
+        }
         self.FIELD_SIZE = math.sqrt(len(self.map)) - 1
 
     def draw(self):
@@ -133,7 +157,7 @@ class Game(object):
         self.objects.clicked(tx, ty)
 
 
-window = pyglet.window.Window(width=800, height=600)
+window = pyglet.window.Window(width=1024, height=768)
 game = Game()
 
 @window.event
@@ -148,4 +172,4 @@ def on_mouse_press(x, y, button, modifiers):
 
 pyglet.app.run()
 
-# TODO: map size, player object, enemy object, wall, cant move on wall.
+# TODO: map size, player object, enemy object, movement action through proxy object, wall, cant move on wall.
