@@ -14,6 +14,9 @@ class Position(object):
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
+    def __repr__(self):
+        return '({} {})'.format(self.x, self.y)
+
 
 class Primitive(object):
     def __init__(self):
@@ -86,30 +89,28 @@ class Objects(Primitive):
             if not isinstance(tile, int):
                 tile.draw(x, y, size, self.shrink_factor)
 
-    def move(self, obj, tx, ty):
-        for i, row in enumerate(self.map):
-            for j, tile in enumerate(row):
-                if tile is obj:
-                    print('tx: ', tx, 'ty: ', ty, 'i: ', i, 'j: ', j)
-                    self.map[i][j] = self.default_value
-                    self.map[tx][ty] = obj
+    def move(self, frm: Position, to: Position):
+        tmp = self.map[frm]
+        self.map[frm] = self.default_value
+        self.map[to] = tmp
 
-    def _get_selected_object(self):
+    def _get_selected_object_position(self):
         for pos, tile in self.map.items():
             if not isinstance(tile, int) and tile.is_selected:
-                return tile
+                return pos
         return None
 
     def clicked(self, x, y):
-        obj = self.map[Position(x, y)]
-        if not isinstance(obj, int):
+        pos = Position(x, y)
+        clicked = self.map[pos]
+        if not isinstance(clicked, int):
             # select clicked object
-            obj.toggle_selection()
+            clicked.toggle_selection()
         else:
             # if we have selected object, move him
-            obj = self._get_selected_object()
-            if obj:
-                self.move(obj, x, y)
+            frm = self._get_selected_object_position()
+            if frm:
+                self.move(frm, pos)
 
 
 class Game(object):
