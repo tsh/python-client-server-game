@@ -80,6 +80,7 @@ class Objects(Primitive):
         self.map = {Position(0, 0): 0, Position(1, 0): 1,           Position(2, 0): 0,
                     Position(0, 1): 1, Position(1, 1): Character(), Position(2, 1): 1,
                     Position(0, 2): 0, Position(1, 2): 1,           Position(2, 2): 0}
+        self.FIELD_SIZE = math.sqrt(len(self.map)) - 1
 
     def draw(self):
         for pos, tile in self.map.items():
@@ -101,6 +102,9 @@ class Objects(Primitive):
         return None
 
     def clicked(self, x, y):
+        if not (x <= self.FIELD_SIZE and y <= self.FIELD_SIZE):
+            print('Out of boundaries: ', x, y)
+            return
         pos = Position(x, y)
         clicked = self.map[pos]
         if not isinstance(clicked, int):
@@ -144,4 +148,4 @@ def on_mouse_press(x, y, button, modifiers):
 
 pyglet.app.run()
 
-# TODO: movement, game field boundries, map size, player object, enemy object, wall, cant move on wall.
+# TODO: map size, player object, enemy object, wall, cant move on wall.
