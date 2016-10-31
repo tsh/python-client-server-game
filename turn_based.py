@@ -19,8 +19,7 @@ class Position(object):
 
 
 class Primitive(object):
-    def __init__(self):
-        self.SIZE = 48
+    SIZE = 48
 
     def _draw_rect(self, x, y, width, height, color):
         image_pattern = pyglet.image.SolidColorImagePattern(color=color)
@@ -28,15 +27,14 @@ class Primitive(object):
         image.blit(x, y)
 
     def get_clicked_tile_position(self, x, y):
-        tx = math.floor(x / 100)
-        ty = math.floor(y / 100)
+        tx = math.floor(x / self.SIZE)
+        ty = math.floor(y / self.SIZE)
         return tx, ty
 
 
 
 class Map(Primitive):
     def __init__(self):
-        # TODO: 64x64
         super().__init__()
         self.map = {
             Position(0, 12): 0,     Position(1, 12): 1,         Position(2, 12): 0,     Position(3, 12): 0,     Position(4, 12): 0,     Position(5, 12): 0,     Position(6, 12): 0,     Position(7, 12): 0,     Position(8, 12): 0,     Position(9, 12): 0,     Position(10, 12): 0,        Position(11, 12): 0,
@@ -79,7 +77,9 @@ class Character(Primitive):
     def draw(self, x, y, size, shrink_factor):
         if self.is_selected:
             self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, (0, 255, 0, 0))
-            self._draw_rect(x + shrink_factor + 20 , y + shrink_factor + 20 , size - 40 , size - 40, (128, 0, 128, 0))
+            self._draw_rect(x + shrink_factor + int(Primitive.SIZE*0.2) , y + shrink_factor + int(Primitive.SIZE*0.2) ,
+                            size - int(Primitive.SIZE*0.4) , size - int(Primitive.SIZE*0.4),
+                            (128, 0, 128, 0))
         else:
             self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, (0, 255, 0, 0))
 
@@ -87,7 +87,7 @@ class Character(Primitive):
 class Objects(Primitive):
     def __init__(self):
         super().__init__()
-        self.shrink_factor = 15
+        self.shrink_factor = 5
         self.default_value = 0
         self.map = {
             Position(0, 12): 0,     Position(1, 12): 0,         Position(2, 12): 0,     Position(3, 12): 0,     Position(4, 12): 0,     Position(5, 12): 0,     Position(6, 12): 0,     Position(7, 12): 0,     Position(8, 12): 0,     Position(9, 12): 0,     Position(10, 12): 0,        Position(11, 12): 0,
@@ -172,4 +172,4 @@ def on_mouse_press(x, y, button, modifiers):
 
 pyglet.app.run()
 
-# TODO: map size, player object, enemy object, movement action through proxy object, wall, cant move on wall.
+# TODO: player object, enemy object, fix boundary bag, movement action through proxy object, wall, cant move on wall.
