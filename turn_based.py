@@ -57,7 +57,7 @@ class Map(Primitive):
                 x = pos.x * self.SIZE
                 y = pos.y * self.SIZE
                 if tile == 0:
-                    clr = (255, 0, 0, 0)
+                    clr = (211, 211, 211, 0)
                 elif tile == 1:
                     clr = (0, 0, 255, 0)
                 self._draw_rect(x, y, self.SIZE, self.SIZE, clr)
@@ -70,18 +70,31 @@ class Character(Primitive):
     def __init__(self):
         super().__init__()
         self.is_selected = False
+        self.color = (0, 255, 0, 0)
+        self.selection_color = (128, 0, 128, 0)
 
     def toggle_selection(self):
         self.is_selected = not self.is_selected
 
     def draw(self, x, y, size, shrink_factor):
         if self.is_selected:
-            self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, (0, 255, 0, 0))
+            self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, self.color)
             self._draw_rect(x + shrink_factor + int(Primitive.SIZE*0.2) , y + shrink_factor + int(Primitive.SIZE*0.2) ,
                             size - int(Primitive.SIZE*0.4) , size - int(Primitive.SIZE*0.4),
-                            (128, 0, 128, 0))
+                            self.selection_color)
         else:
             self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, (0, 255, 0, 0))
+
+
+class Enemy(Primitive):
+    def __init__(self):
+        self.color = (255, 0, 0, 0)
+
+    def toggle_selection(self):
+        pass
+
+    def draw(self, x, y, size, shrink_factor):
+        self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, self.color)
 
 
 class Objects(Primitive):
@@ -93,7 +106,7 @@ class Objects(Primitive):
             Position(0, 12): 0,     Position(1, 12): 0,         Position(2, 12): 0,     Position(3, 12): 0,     Position(4, 12): 0,     Position(5, 12): 0,     Position(6, 12): 0,     Position(7, 12): 0,     Position(8, 12): 0,     Position(9, 12): 0,     Position(10, 12): 0,        Position(11, 12): 0,
             Position(0, 11): 0,     Position(1, 11): 0,         Position(2, 11): 0,     Position(3, 11): 0,     Position(4, 11): 0,     Position(5, 11): 0,     Position(6, 11): 0,     Position(7, 11): 0,     Position(8, 11): 0,     Position(9, 11): 0,     Position(10, 11): 0,        Position(11, 11): 0,
             Position(0, 10): 0,     Position(1, 10): 0,         Position(2, 10): 0,     Position(3, 10): 0,     Position(4, 10): 0,     Position(5, 10): 0,     Position(6, 10): 0,     Position(7, 10): 0,     Position(8, 10): 0,     Position(9, 10): 0,     Position(10, 10): 0,        Position(11, 10): 0,
-            Position(0, 9): 0,      Position(1, 9): 0,          Position(2, 9): 0,      Position(3, 9): 0,      Position(4, 9): 0,      Position(5, 9): 0,      Position(6, 9): 0,      Position(7, 9): 0,      Position(8, 9): 0,      Position(9, 9): 0,      Position(10, 9): 0,         Position(11, 9): 0,
+            Position(0, 9): 0,      Position(1, 9): 0,          Position(2, 9): 0,      Position(3, 9): 0,      Position(4, 9): 0,      Position(5, 9): 0,      Position(6, 9): Enemy(),      Position(7, 9): 0,      Position(8, 9): 0,      Position(9, 9): 0,      Position(10, 9): 0,         Position(11, 9): 0,
             Position(0, 8): 0,      Position(1, 8): 0,          Position(2, 8): 0,      Position(3, 8): 0,      Position(4, 8): 0,      Position(5, 8): 0,      Position(6, 8): 0,      Position(7, 8): 0,      Position(8, 8): 0,      Position(9, 8): 0,      Position(10, 8): 0,         Position(11, 8): 0,
             Position(0, 7): 0,      Position(1, 7): 0,          Position(2, 7): 0,      Position(3, 7): 0,      Position(4, 7): 0,      Position(5, 7): 0,      Position(6, 7): 0,      Position(7, 7): 0,      Position(8, 7): 0,      Position(9, 7): 0,      Position(10, 7): 0,         Position(11, 7): 0,
             Position(0, 6): 0,      Position(1, 6): 0,          Position(2, 6): 0,      Position(3, 6): 0,      Position(4, 6): 0,      Position(5, 6): 0,      Position(6, 6): 0,      Position(7, 6): 0,      Position(8, 6): 0,      Position(9, 6): 0,      Position(10, 6): 0,         Position(11, 6): 0,
@@ -121,8 +134,11 @@ class Objects(Primitive):
 
     def _get_selected_object_position(self):
         for pos, tile in self.map.items():
-            if not isinstance(tile, int) and tile.is_selected:
-                return pos
+            try:
+                if tile.is_selected:
+                    return pos
+            except AttributeError:
+                pass
         return None
 
     def clicked(self, x, y):
@@ -172,4 +188,4 @@ def on_mouse_press(x, y, button, modifiers):
 
 pyglet.app.run()
 
-# TODO: player object, enemy object, fix boundary bag, movement action through proxy object, wall, cant move on wall.
+# TODO: fix boundary bag, movement action through proxy object, wall, cant stand on wall.
