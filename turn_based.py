@@ -189,3 +189,4 @@ def on_mouse_press(x, y, button, modifiers):
 pyglet.app.run()
 
 # TODO: fix boundary bag, movement action through proxy object, wall, cant stand on wall.
+# MAP: either put map as global object, or create 3rd map object in Objects that holds Logic data.
