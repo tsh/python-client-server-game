@@ -168,6 +168,9 @@ class Objects(object):
             if frm:
                 self.move(frm, pos)
 
+    def get_clicked_tile_position(self, x, y):
+        return Primitive().get_clicked_tile_position(x, y)
+
 
 class Game(object):
     def __init__(self):
