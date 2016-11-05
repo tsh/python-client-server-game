@@ -21,6 +21,11 @@ class Position(object):
 class Primitive(object):
     SIZE = 48
 
+    def draw(self, pos: Position):
+        x = pos.x * self.SIZE
+        y = pos.y * self.SIZE
+        self._draw_rect(x, y, self.SIZE, self.SIZE, self.color)
+
     def _draw_rect(self, x, y, width, height, color):
         image_pattern = pyglet.image.SolidColorImagePattern(color=color)
         image = image_pattern.create_image(width, height)
@@ -36,16 +41,10 @@ class Floor(Primitive):
     def __init__(self):
         self.color = (211, 211, 211, 0)
 
-    def draw(self, x, y):
-        self._draw_rect(x, y, self.SIZE, self.SIZE, self.color)
-
 
 class Water(Primitive):
     def __init__(self):
         self.color = (0, 0, 250, 0)
-
-    def draw(self, x, y):
-        self._draw_rect(x, y, self.SIZE, self.SIZE, self.color)
 
 
 class Map(object):
@@ -69,9 +68,7 @@ class Map(object):
 
     def draw(self):
         for pos, tile in self.map.items():
-            x = pos.x * tile.SIZE
-            y = pos.y * tile.SIZE
-            tile.draw(x, y)
+            tile.draw(pos)
 
     def clicked(self, x, y):
         pass
@@ -83,35 +80,38 @@ class Character(Primitive):
         self.is_selected = False
         self.color = (0, 255, 0, 0)
         self.selection_color = (128, 0, 128, 0)
+        self.shrink_factor = 5
 
     def toggle_selection(self):
         self.is_selected = not self.is_selected
 
-    def draw(self, x, y, size, shrink_factor):
+    def draw(self, x, y):
+        size = self.SIZE - self.shrink_factor * 2
         if self.is_selected:
-            self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, self.color)
-            self._draw_rect(x + shrink_factor + int(Primitive.SIZE*0.2) , y + shrink_factor + int(Primitive.SIZE*0.2) ,
+            self._draw_rect(x + self.shrink_factor , y + self.shrink_factor , size, size, self.color)
+            self._draw_rect(x + self.shrink_factor + int(Primitive.SIZE*0.2) , y + self.shrink_factor + int(Primitive.SIZE*0.2) ,
                             size - int(Primitive.SIZE*0.4) , size - int(Primitive.SIZE*0.4),
                             self.selection_color)
         else:
-            self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, (0, 255, 0, 0))
+            self._draw_rect(x + self.shrink_factor , y + self.shrink_factor , size, size, (0, 255, 0, 0))
 
 
 class Enemy(Primitive):
     def __init__(self):
         self.color = (255, 0, 0, 0)
+        self.shrink_factor = 5
 
     def toggle_selection(self):
         pass
 
-    def draw(self, x, y, size, shrink_factor):
-        self._draw_rect(x + shrink_factor , y + shrink_factor , size, size, self.color)
+    def draw(self, x, y):
+        size = self.SIZE - self.shrink_factor * 2
+        self._draw_rect(x + self.shrink_factor , y + self.shrink_factor , size, size, self.color)
 
 
-class Objects(Primitive):
+class Objects(object):
     def __init__(self):
         super().__init__()
-        self.shrink_factor = 5
         self.default_value = 0
         self.map = {
             Position(0, 12): 0,     Position(1, 12): 0,         Position(2, 12): 0,     Position(3, 12): 0,     Position(4, 12): 0,     Position(5, 12): 0,     Position(6, 12): 0,     Position(7, 12): 0,     Position(8, 12): 0,     Position(9, 12): 0,     Position(10, 12): 0,        Position(11, 12): 0,    Position(12, 12): 0,
@@ -134,9 +134,8 @@ class Objects(Primitive):
         for pos, tile in self.map.items():
             x = pos.x * self.SIZE
             y = pos.y * self.SIZE
-            size = self.SIZE - self.shrink_factor * 2
             if not isinstance(tile, int):
-                tile.draw(x, y, size, self.shrink_factor)
+                tile.draw(x, y)
 
     def move(self, frm: Position, to: Position):
         tmp = self.map[frm]
