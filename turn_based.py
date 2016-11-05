@@ -85,7 +85,9 @@ class Character(Primitive):
     def toggle_selection(self):
         self.is_selected = not self.is_selected
 
-    def draw(self, x, y):
+    def draw(self, pos: Position):
+        x = pos.x * self.SIZE
+        y = pos.y * self.SIZE
         size = self.SIZE - self.shrink_factor * 2
         if self.is_selected:
             self._draw_rect(x + self.shrink_factor , y + self.shrink_factor , size, size, self.color)
@@ -104,7 +106,9 @@ class Enemy(Primitive):
     def toggle_selection(self):
         pass
 
-    def draw(self, x, y):
+    def draw(self, pos: Position):
+        x = pos.x * self.SIZE
+        y = pos.y * self.SIZE
         size = self.SIZE - self.shrink_factor * 2
         self._draw_rect(x + self.shrink_factor , y + self.shrink_factor , size, size, self.color)
 
@@ -132,10 +136,8 @@ class Objects(object):
 
     def draw(self):
         for pos, tile in self.map.items():
-            x = pos.x * self.SIZE
-            y = pos.y * self.SIZE
             if not isinstance(tile, int):
-                tile.draw(x, y)
+                tile.draw(pos)
 
     def move(self, frm: Position, to: Position):
         tmp = self.map[frm]
