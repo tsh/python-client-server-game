@@ -48,7 +48,7 @@ class Water(Primitive):
         self._draw_rect(x, y, self.SIZE, self.SIZE, self.color)
 
 
-class Map(Primitive):
+class Map(object):
     def __init__(self):
         super().__init__()
         self.map = {
@@ -69,11 +69,9 @@ class Map(Primitive):
 
     def draw(self):
         for pos, tile in self.map.items():
-            x = pos.x * self.SIZE
-            y = pos.y * self.SIZE
+            x = pos.x * tile.SIZE
+            y = pos.y * tile.SIZE
             tile.draw(x, y)
-
-
 
     def clicked(self, x, y):
         pass
