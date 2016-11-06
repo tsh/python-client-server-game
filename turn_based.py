@@ -39,7 +39,7 @@ class Drawable(object):
         """ Transforms screen coordinate `x` and `y` to tile clicked tile """
         tx = math.floor(x / cls.SIZE)
         ty = math.floor(y / cls.SIZE)
-        return tx, ty
+        return Position(tx, ty)
 
     @classmethod
     def get_screen_coord(cls, pos: Position):
@@ -82,7 +82,7 @@ class Map(object):
         for pos, tile in self.map.items():
             tile.draw(pos)
 
-    def clicked(self, x, y):
+    def clicked(self, pos: Position):
         pass
 
 
@@ -163,8 +163,7 @@ class Objects(object):
                 pass
         return None
 
-    def clicked(self, x, y):
-        pos = Position(x, y)
+    def clicked(self, pos: Position):
         try:
             self.check_boundaries(pos)
         except NotInGameField:
@@ -184,6 +183,7 @@ class Objects(object):
             print('Out of boundaries: ', pos.x, pos.y)
             raise NotInGameField
 
+
 class Game(object):
     def __init__(self):
         self.map = Map()
@@ -195,9 +195,9 @@ class Game(object):
 
     def on_left_click(self, x, y):
         # Transform screen coordinates into tile
-        tx, ty = Drawable.get_clicked_tile_position(x, y)
-        self.map.clicked(tx, ty)
-        self.objects.clicked(tx, ty)
+        pos = Drawable.get_clicked_tile_position(x, y)
+        self.map.clicked(pos)
+        self.objects.clicked(pos)
 
 
 window = pyglet.window.Window(width=1024, height=768)
