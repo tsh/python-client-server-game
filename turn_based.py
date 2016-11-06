@@ -31,9 +31,10 @@ class Primitive(object):
         image = image_pattern.create_image(width, height)
         image.blit(x, y)
 
-    def get_clicked_tile_position(self, x, y):
-        tx = math.floor(x / self.SIZE)
-        ty = math.floor(y / self.SIZE)
+    @classmethod
+    def get_clicked_tile_position(cls, x, y):
+        tx = math.floor(x / cls.SIZE)
+        ty = math.floor(y / cls.SIZE)
         return tx, ty
 
 
@@ -168,9 +169,6 @@ class Objects(object):
             if frm:
                 self.move(frm, pos)
 
-    def get_clicked_tile_position(self, x, y):
-        return Primitive().get_clicked_tile_position(x, y)
-
 
 class Game(object):
     def __init__(self):
@@ -183,7 +181,7 @@ class Game(object):
 
     def on_left_click(self, x, y):
         # Transform screen coordinates into tile
-        tx, ty = self.objects.get_clicked_tile_position(x, y)
+        tx, ty = Primitive.get_clicked_tile_position(x, y)
         self.map.clicked(tx, ty)
         self.objects.clicked(tx, ty)
 
