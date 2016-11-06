@@ -8,6 +8,7 @@ class NotInGameField(Exception):
 
 
 class Position(object):
+    """ Represent tile object position """
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -123,9 +124,8 @@ class Enemy(Drawable):
         self._draw_rect(x + self.shrink_factor, y + self.shrink_factor, size, size, self.color)
 
 
-class Objects(object):
-    def __init__(self):
-        super().__init__()
+class GameFieldManager(object):
+    def __init__(self, map):
         self.default_value = 0
         self.objs = {
             Position(0, 12): 0,     Position(1, 12): 0,         Position(2, 12): 0,     Position(3, 12): 0,     Position(4, 12): 0,     Position(5, 12): 0,     Position(6, 12): 0,     Position(7, 12): 0,     Position(8, 12): 0,     Position(9, 12): 0,     Position(10, 12): 0,        Position(11, 12): 0,    Position(12, 12): 0,
@@ -142,9 +142,11 @@ class Objects(object):
             Position(0, 1): 0,      Position(1, 1): Character(),Position(2, 1): 0,      Position(3, 1): 0,      Position(4, 1): 0,      Position(5, 1): 0,      Position(6, 1): 0,      Position(7, 1): 0,      Position(8, 1): 0,      Position(9, 1): 0,      Position(10, 1): 0,         Position(11, 1): 0,     Position(12, 1): 0,
             Position(0, 0): 0,      Position(1, 0): 0,          Position(2, 0): 0,      Position(3, 0): 0,      Position(4, 0): 0,      Position(5, 0): 0,      Position(6, 0): 0,      Position(7, 0): 0,      Position(8, 0): 0,      Position(9, 0): 0,      Position(10, 0): 0,         Position(11, 0): 1,     Position(12, 0): 0,
         }
+        self.map = map
         self.FIELD_SIZE = math.sqrt(len(self.objs)) - 1
 
     def draw(self):
+        self.map.draw()
         for pos, tile in self.objs.items():
             if not isinstance(tile, int):
                 tile.draw(pos)
@@ -179,6 +181,7 @@ class Objects(object):
                 self.move(frm, pos)
 
     def check_boundaries(self, pos: Position):
+        # TODO: move me to map
         if not (pos.x <= self.FIELD_SIZE and pos.y <= self.FIELD_SIZE):
             print('Out of boundaries: ', pos.x, pos.y)
             raise NotInGameField
@@ -186,18 +189,16 @@ class Objects(object):
 
 class Game(object):
     def __init__(self):
-        self.map = Map()
-        self.objects = Objects()
+        map = Map()
+        self.gfm = GameFieldManager(map)
 
     def draw(self):
-        self.map.draw()
-        self.objects.draw()
+        self.gfm.draw()
 
     def on_left_click(self, x, y):
         # Transform screen coordinates into tile
         pos = Drawable.get_clicked_tile_position(x, y)
-        self.map.clicked(pos)
-        self.objects.clicked(pos)
+        self.gfm.clicked(pos)
 
 
 window = pyglet.window.Window(width=1024, height=768)
