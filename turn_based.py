@@ -22,8 +22,7 @@ class Drawable(object):
     SIZE = 48
 
     def draw(self, pos: Position):
-        x = pos.x * self.SIZE
-        y = pos.y * self.SIZE
+        x, y = self.get_screen_coord(pos)
         self._draw_rect(x, y, self.SIZE, self.SIZE, self.color)
 
     def _draw_rect(self, x, y, width, height, color):
@@ -33,9 +32,17 @@ class Drawable(object):
 
     @classmethod
     def get_clicked_tile_position(cls, x, y):
+        """ Transforms screen coordinate `x` and `y` to tile clicked tile """
         tx = math.floor(x / cls.SIZE)
         ty = math.floor(y / cls.SIZE)
         return tx, ty
+
+    @classmethod
+    def get_screen_coord(cls, pos: Position):
+        """ Transforms tile position to screen coordinates """
+        x = pos.x * cls.SIZE
+        y = pos.y * cls.SIZE
+        return x, y
 
 
 class Floor(Drawable):
@@ -87,8 +94,7 @@ class Character(Drawable):
         self.is_selected = not self.is_selected
 
     def draw(self, pos: Position):
-        x = pos.x * self.SIZE
-        y = pos.y * self.SIZE
+        x, y = self.get_screen_coord(pos)
         size = self.SIZE - self.shrink_factor * 2
         if self.is_selected:
             self._draw_rect(x + self.shrink_factor , y + self.shrink_factor , size, size, self.color)
@@ -108,10 +114,9 @@ class Enemy(Drawable):
         pass
 
     def draw(self, pos: Position):
-        x = pos.x * self.SIZE
-        y = pos.y * self.SIZE
+        x, y = self.get_screen_coord(pos)
         size = self.SIZE - self.shrink_factor * 2
-        self._draw_rect(x + self.shrink_factor , y + self.shrink_factor , size, size, self.color)
+        self._draw_rect(x + self.shrink_factor, y + self.shrink_factor, size, size, self.color)
 
 
 class Objects(object):
