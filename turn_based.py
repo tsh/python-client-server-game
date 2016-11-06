@@ -18,7 +18,7 @@ class Position(object):
         return '({} {})'.format(self.x, self.y)
 
 
-class Primitive(object):
+class Drawable(object):
     SIZE = 48
 
     def draw(self, pos: Position):
@@ -38,12 +38,12 @@ class Primitive(object):
         return tx, ty
 
 
-class Floor(Primitive):
+class Floor(Drawable):
     def __init__(self):
         self.color = (211, 211, 211, 0)
 
 
-class Water(Primitive):
+class Water(Drawable):
     def __init__(self):
         self.color = (0, 0, 250, 0)
 
@@ -75,7 +75,7 @@ class Map(object):
         pass
 
 
-class Character(Primitive):
+class Character(Drawable):
     def __init__(self):
         super().__init__()
         self.is_selected = False
@@ -92,14 +92,14 @@ class Character(Primitive):
         size = self.SIZE - self.shrink_factor * 2
         if self.is_selected:
             self._draw_rect(x + self.shrink_factor , y + self.shrink_factor , size, size, self.color)
-            self._draw_rect(x + self.shrink_factor + int(Primitive.SIZE*0.2) , y + self.shrink_factor + int(Primitive.SIZE*0.2) ,
-                            size - int(Primitive.SIZE*0.4) , size - int(Primitive.SIZE*0.4),
+            self._draw_rect(x + self.shrink_factor + int(Drawable.SIZE * 0.2), y + self.shrink_factor + int(Drawable.SIZE * 0.2),
+                            size - int(Drawable.SIZE * 0.4), size - int(Drawable.SIZE * 0.4),
                             self.selection_color)
         else:
             self._draw_rect(x + self.shrink_factor , y + self.shrink_factor , size, size, (0, 255, 0, 0))
 
 
-class Enemy(Primitive):
+class Enemy(Drawable):
     def __init__(self):
         self.color = (255, 0, 0, 0)
         self.shrink_factor = 5
@@ -181,7 +181,7 @@ class Game(object):
 
     def on_left_click(self, x, y):
         # Transform screen coordinates into tile
-        tx, ty = Primitive.get_clicked_tile_position(x, y)
+        tx, ty = Drawable.get_clicked_tile_position(x, y)
         self.map.clicked(tx, ty)
         self.objects.clicked(tx, ty)
 
