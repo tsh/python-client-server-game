@@ -3,6 +3,10 @@ import pyglet
 from pyglet.window import mouse
 
 
+class NotInGameField(Exception):
+    pass
+
+
 class Position(object):
     def __init__(self, x, y):
         self.x = x
@@ -160,10 +164,11 @@ class Objects(object):
         return None
 
     def clicked(self, x, y):
-        if not (x <= self.FIELD_SIZE and y <= self.FIELD_SIZE):
-            print('Out of boundaries: ', x, y)
-            return
         pos = Position(x, y)
+        try:
+            self.check_boundaries(pos)
+        except NotInGameField:
+            return
         clicked = self.objs[pos]
         if not isinstance(clicked, int):
             # select clicked object
@@ -174,6 +179,10 @@ class Objects(object):
             if frm:
                 self.move(frm, pos)
 
+    def check_boundaries(self, pos: Position):
+        if not (pos.x <= self.FIELD_SIZE and pos.y <= self.FIELD_SIZE):
+            print('Out of boundaries: ', pos.x, pos.y)
+            raise NotInGameField
 
 class Game(object):
     def __init__(self):
