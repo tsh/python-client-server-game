@@ -123,7 +123,7 @@ class Objects(object):
     def __init__(self):
         super().__init__()
         self.default_value = 0
-        self.map = {
+        self.objs = {
             Position(0, 12): 0,     Position(1, 12): 0,         Position(2, 12): 0,     Position(3, 12): 0,     Position(4, 12): 0,     Position(5, 12): 0,     Position(6, 12): 0,     Position(7, 12): 0,     Position(8, 12): 0,     Position(9, 12): 0,     Position(10, 12): 0,        Position(11, 12): 0,    Position(12, 12): 0,
             Position(0, 11): 0,     Position(1, 11): 0,         Position(2, 11): 0,     Position(3, 11): 0,     Position(4, 11): 0,     Position(5, 11): 0,     Position(6, 11): 0,     Position(7, 11): 0,     Position(8, 11): 0,     Position(9, 11): 0,     Position(10, 11): 0,        Position(11, 11): 0,    Position(12, 11): 0,
             Position(0, 10): 0,     Position(1, 10): 0,         Position(2, 10): 0,     Position(3, 10): 0,     Position(4, 10): 0,     Position(5, 10): 0,     Position(6, 10): 0,     Position(7, 10): 0,     Position(8, 10): 0,     Position(9, 10): 0,     Position(10, 10): 0,        Position(11, 10): 0,    Position(12, 10): 0,
@@ -138,20 +138,20 @@ class Objects(object):
             Position(0, 1): 0,      Position(1, 1): Character(),Position(2, 1): 0,      Position(3, 1): 0,      Position(4, 1): 0,      Position(5, 1): 0,      Position(6, 1): 0,      Position(7, 1): 0,      Position(8, 1): 0,      Position(9, 1): 0,      Position(10, 1): 0,         Position(11, 1): 0,     Position(12, 1): 0,
             Position(0, 0): 0,      Position(1, 0): 0,          Position(2, 0): 0,      Position(3, 0): 0,      Position(4, 0): 0,      Position(5, 0): 0,      Position(6, 0): 0,      Position(7, 0): 0,      Position(8, 0): 0,      Position(9, 0): 0,      Position(10, 0): 0,         Position(11, 0): 1,     Position(12, 0): 0,
         }
-        self.FIELD_SIZE = math.sqrt(len(self.map)) - 1
+        self.FIELD_SIZE = math.sqrt(len(self.objs)) - 1
 
     def draw(self):
-        for pos, tile in self.map.items():
+        for pos, tile in self.objs.items():
             if not isinstance(tile, int):
                 tile.draw(pos)
 
     def move(self, frm: Position, to: Position):
-        tmp = self.map[frm]
-        self.map[frm] = self.default_value
-        self.map[to] = tmp
+        tmp = self.objs[frm]
+        self.objs[frm] = self.default_value
+        self.objs[to] = tmp
 
     def _get_selected_object_position(self):
-        for pos, tile in self.map.items():
+        for pos, tile in self.objs.items():
             try:
                 if tile.is_selected:
                     return pos
@@ -164,7 +164,7 @@ class Objects(object):
             print('Out of boundaries: ', x, y)
             return
         pos = Position(x, y)
-        clicked = self.map[pos]
+        clicked = self.objs[pos]
         if not isinstance(clicked, int):
             # select clicked object
             clicked.toggle_selection()
