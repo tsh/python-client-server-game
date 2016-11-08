@@ -134,19 +134,7 @@ class GameFieldManager(object):
     def __init__(self, mp: Map):
         self.default_value = 0
         self.objs = {
-            Position(0, 12): 0,     Position(1, 12): 0,         Position(2, 12): 0,     Position(3, 12): 0,     Position(4, 12): 0,     Position(5, 12): 0,     Position(6, 12): 0,     Position(7, 12): 0,     Position(8, 12): 0,     Position(9, 12): 0,     Position(10, 12): 0,        Position(11, 12): 0,    Position(12, 12): 0,
-            Position(0, 11): 0,     Position(1, 11): 0,         Position(2, 11): 0,     Position(3, 11): 0,     Position(4, 11): 0,     Position(5, 11): 0,     Position(6, 11): 0,     Position(7, 11): 0,     Position(8, 11): 0,     Position(9, 11): 0,     Position(10, 11): 0,        Position(11, 11): 0,    Position(12, 11): 0,
-            Position(0, 10): 0,     Position(1, 10): 0,         Position(2, 10): 0,     Position(3, 10): 0,     Position(4, 10): 0,     Position(5, 10): 0,     Position(6, 10): 0,     Position(7, 10): 0,     Position(8, 10): 0,     Position(9, 10): 0,     Position(10, 10): 0,        Position(11, 10): 0,    Position(12, 10): 0,
-            Position(0, 9): 0,      Position(1, 9): 0,          Position(2, 9): 0,      Position(3, 9): 0,      Position(4, 9): 0,      Position(5, 9): 0,      Position(6, 9): Enemy(),      Position(7, 9): 0,      Position(8, 9): 0,      Position(9, 9): 0,      Position(10, 9): 0,   Position(11, 9): 0,     Position(12, 9): 0,
-            Position(0, 8): 0,      Position(1, 8): 0,          Position(2, 8): 0,      Position(3, 8): 0,      Position(4, 8): 0,      Position(5, 8): 0,      Position(6, 8): 0,      Position(7, 8): 0,      Position(8, 8): 0,      Position(9, 8): 0,      Position(10, 8): 0,         Position(11, 8): 0,     Position(12, 8): 0,
-            Position(0, 7): 0,      Position(1, 7): 0,          Position(2, 7): 0,      Position(3, 7): 0,      Position(4, 7): 0,      Position(5, 7): 0,      Position(6, 7): 0,      Position(7, 7): 0,      Position(8, 7): 0,      Position(9, 7): 0,      Position(10, 7): 0,         Position(11, 7): 0,     Position(12, 7): 0,
-            Position(0, 6): 0,      Position(1, 6): 0,          Position(2, 6): 0,      Position(3, 6): 0,      Position(4, 6): 0,      Position(5, 6): 0,      Position(6, 6): 0,      Position(7, 6): 0,      Position(8, 6): 0,      Position(9, 6): 0,      Position(10, 6): 0,         Position(11, 6): 0,     Position(12, 6): 0,
-            Position(0, 5): 0,      Position(1, 5): 0,          Position(2, 5): 0,      Position(3, 5): 0,      Position(4, 5): 0,      Position(5, 5): 0,      Position(6, 5): 0,      Position(7, 5): 0,      Position(8, 5): 0,      Position(9, 5): 0,      Position(10, 5): 0,         Position(11, 5): 0,     Position(12, 5): 0,
-            Position(0, 4): 0,      Position(1, 4): 0,          Position(2, 4): 0,      Position(3, 4): 0,      Position(4, 4): 0,      Position(5, 4): 0,      Position(6, 4): 0,      Position(7, 4): 0,      Position(8, 4): 0,      Position(9, 4): 0,      Position(10, 4): 0,         Position(11, 4): 0,     Position(12, 4): 0,
-            Position(0, 3): 0,      Position(1, 3): 0,          Position(2, 3): 0,      Position(3, 3): 0,      Position(4, 3): 0,      Position(5, 3): 0,      Position(6, 3): 0,      Position(7, 3): 0,      Position(8, 3): 0,      Position(9, 3): 0,      Position(10, 3): 0,         Position(11, 3): 0,     Position(12, 3): 0,
-            Position(0, 2): 0,      Position(1, 2): 0,          Position(2, 2): 0,      Position(3, 2): 0,      Position(4, 2): 0,      Position(5, 2): 0,      Position(6, 2): 0,      Position(7, 2): 0,      Position(8, 2): 0,      Position(9, 2): 0,      Position(10, 2): 0,         Position(11, 2): 0,     Position(12, 2): 0,
-            Position(0, 1): 0,      Position(1, 1): Character(),Position(2, 1): 0,      Position(3, 1): 0,      Position(4, 1): 0,      Position(5, 1): 0,      Position(6, 1): 0,      Position(7, 1): 0,      Position(8, 1): 0,      Position(9, 1): 0,      Position(10, 1): 0,         Position(11, 1): 0,     Position(12, 1): 0,
-            Position(0, 0): 0,      Position(1, 0): 0,          Position(2, 0): 0,      Position(3, 0): 0,      Position(4, 0): 0,      Position(5, 0): 0,      Position(6, 0): 0,      Position(7, 0): 0,      Position(8, 0): 0,      Position(9, 0): 0,      Position(10, 0): 0,         Position(11, 0): 1,     Position(12, 0): 0,
+            Position(6, 9): Enemy(),    Position(1, 1): Character(),
         }
         self.map = mp
 
@@ -200,20 +188,24 @@ class Game(object):
         self.gfm.clicked(pos)
 
 
-window = pyglet.window.Window(width=1024, height=768)
-game = Game()
+class MainWindow(pyglet.window.Window):
+    """ Handle all low level implementation detail. Register events and pass them to game handlers. """
+    def __init__(self, game):
+        super().__init__(width=1024, height=768)
+        self.game = game
 
-@window.event
-def on_draw():
-    window.clear()
-    game.draw()
+    def on_draw(self):
+        self.clear()
+        self.game.draw()
 
-@window.event
-def on_mouse_press(x, y, button, modifiers):
-    if button == mouse.LEFT:
-        game.on_left_click(x, y)
+    def on_mouse_press(self, x, y, button, modifiers):
+        if button == mouse.LEFT:
+            self.game.on_left_click(x, y)
 
-pyglet.app.run()
+
+if __name__ == '__main__':
+    game = Game()
+    w = MainWindow(game)
+    pyglet.app.run()
 
 # TODO: all action through proxy object, wall, cant stand on wall.
-# MAP: either put map as global object, or create 3rd map object in Objects that holds Logic data.
