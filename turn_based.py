@@ -78,10 +78,16 @@ class Map(object):
             Position(0, 1): Water(),      Position(1, 1): Floor(),          Position(2, 1): Water(),      Position(3, 1): Floor(),      Position(4, 1): Floor(),      Position(5, 1): Floor(),      Position(6, 1): Floor(),      Position(7, 1): Floor(),      Position(8, 1): Floor(),      Position(9, 1): Floor(),      Position(10, 1): Floor(),         Position(11, 1): Floor(),     Position(12, 1): Floor(),
             Position(0, 0): Water(),      Position(1, 0): Water(),          Position(2, 0): Water(),      Position(3, 0): Floor(),      Position(4, 0): Floor(),      Position(5, 0): Floor(),      Position(6, 0): Floor(),      Position(7, 0): Floor(),      Position(8, 0): Floor(),      Position(9, 0): Floor(),      Position(10, 0): Floor(),         Position(11, 0): Water(),     Position(12, 0): Floor(),
         }
+        self.FIELD_SIZE = math.sqrt(len(self.map)) - 1
 
     def draw(self):
         for pos, tile in self.map.items():
             tile.draw(pos)
+
+    def check_boundaries(self, pos: Position):
+        if not (pos.x <= self.FIELD_SIZE and pos.y <= self.FIELD_SIZE):
+            print('Out of boundaries: ', pos.x, pos.y)
+            raise NotInGameField
 
     def clicked(self, pos: Position):
         pass
@@ -125,7 +131,7 @@ class Enemy(Drawable):
 
 
 class GameFieldManager(object):
-    def __init__(self, map):
+    def __init__(self, mp: Map):
         self.default_value = 0
         self.objs = {
             Position(0, 12): 0,     Position(1, 12): 0,         Position(2, 12): 0,     Position(3, 12): 0,     Position(4, 12): 0,     Position(5, 12): 0,     Position(6, 12): 0,     Position(7, 12): 0,     Position(8, 12): 0,     Position(9, 12): 0,     Position(10, 12): 0,        Position(11, 12): 0,    Position(12, 12): 0,
@@ -142,8 +148,7 @@ class GameFieldManager(object):
             Position(0, 1): 0,      Position(1, 1): Character(),Position(2, 1): 0,      Position(3, 1): 0,      Position(4, 1): 0,      Position(5, 1): 0,      Position(6, 1): 0,      Position(7, 1): 0,      Position(8, 1): 0,      Position(9, 1): 0,      Position(10, 1): 0,         Position(11, 1): 0,     Position(12, 1): 0,
             Position(0, 0): 0,      Position(1, 0): 0,          Position(2, 0): 0,      Position(3, 0): 0,      Position(4, 0): 0,      Position(5, 0): 0,      Position(6, 0): 0,      Position(7, 0): 0,      Position(8, 0): 0,      Position(9, 0): 0,      Position(10, 0): 0,         Position(11, 0): 1,     Position(12, 0): 0,
         }
-        self.map = map
-        self.FIELD_SIZE = math.sqrt(len(self.objs)) - 1
+        self.map = mp
 
     def draw(self):
         self.map.draw()
@@ -167,7 +172,7 @@ class GameFieldManager(object):
 
     def clicked(self, pos: Position):
         try:
-            self.check_boundaries(pos)
+            self.map.check_boundaries(pos)
         except NotInGameField:
             return
         clicked = self.objs[pos]
@@ -179,12 +184,6 @@ class GameFieldManager(object):
             frm = self._get_selected_object_position()
             if frm:
                 self.move(frm, pos)
-
-    def check_boundaries(self, pos: Position):
-        # TODO: move me to map
-        if not (pos.x <= self.FIELD_SIZE and pos.y <= self.FIELD_SIZE):
-            print('Out of boundaries: ', pos.x, pos.y)
-            raise NotInGameField
 
 
 class Game(object):
