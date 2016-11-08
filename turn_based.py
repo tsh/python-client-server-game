@@ -149,7 +149,7 @@ class GameFieldManager(object):
         self.objs[frm] = self.default_value
         self.objs[to] = tmp
 
-    def _get_selected_object_position(self):
+    def get_selected_object_position(self):
         for pos, tile in self.objs.items():
             try:
                 if tile.is_selected:
@@ -158,20 +158,22 @@ class GameFieldManager(object):
                 pass
         return None
 
-    def clicked(self, pos: Position):
+    def clicked(self, clicked_pos: Position):
         try:
-            self.map.check_boundaries(pos)
+            self.map.check_boundaries(clicked_pos)
         except NotInGameField:
             return
-        clicked = self.objs[pos]
-        if not isinstance(clicked, int):
+        try:
+            clicked = self.objs[clicked_pos]
+        except KeyError:
+            # click on empty field.
+            # if we have selected object, move selected
+            selected_obj_pos = self.get_selected_object_position()
+            if selected_obj_pos:
+                self.move(selected_obj_pos, clicked_pos)
+        else:
             # select clicked object
             clicked.toggle_selection()
-        else:
-            # if we have selected object, move him
-            frm = self._get_selected_object_position()
-            if frm:
-                self.move(frm, pos)
 
 
 class Game(object):
