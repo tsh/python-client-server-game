@@ -176,9 +176,17 @@ class GameFieldManager(object):
             clicked.toggle_selection()
 
 
+class Nexus(object):
+    """ Implements connection local or through network """
+
+    def get_map(self):
+        return Map()
+
+
 class Game(object):
     def __init__(self):
-        map = Map()
+        self.nexus = Nexus()
+        map = self.nexus.get_map()
         self.gfm = GameFieldManager(map)
 
     def draw(self):
