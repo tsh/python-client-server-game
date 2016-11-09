@@ -41,3 +41,8 @@ class Map(object):
 
     def clicked(self, pos: Position):
         pass
+
+frozen = Map().serialize()
+
+from client_objs import Map as MP
+MP().deserialize(frozen)

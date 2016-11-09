@@ -41,6 +41,18 @@ class Water(Drawable):
         self.color = (0, 0, 250, 0)
 
 
+class Decoder(object):
+    CLASS_LOAD = {
+        'Floor': Floor,
+        'Water': Water
+    }
+
+    @classmethod
+    def load(cls, data):
+        Class = cls.CLASS_LOAD[data]
+        return Class()
+
+
 class Map(object):
     def __init__(self):
         super().__init__()
@@ -72,6 +84,14 @@ class Map(object):
 
     def clicked(self, pos: Position):
         pass
+
+    @classmethod
+    def deserialize(cls, data):
+        import json
+        dc = json.loads(data)
+        map = {}
+        for k,v in dc.items():
+            map[Position.deserialize(k)] = Decoder.load(v)
 
 
 class Character(Drawable):
