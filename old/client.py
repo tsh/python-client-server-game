@@ -4,7 +4,7 @@ import tkinter as tk
 # import arcade
 # import websockets
 
-from client_objs import BaseObject
+from old.client_objs import BaseObject
 
 LOOP_DELAY = 0.05  # ms
 
