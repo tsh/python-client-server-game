@@ -1,18 +1,24 @@
 import math
+import json
 from common import Position, NotInGameField
 
 
 class Floor(object):
-    pass
+    SERIALIZE_VALUE = 'Floor'
+
+    def serialize(self):
+        return self.SERIALIZE_VALUE
 
 
 class Water(object):
-    pass
+    SERIALIZE_VALUE = 'Water'
+
+    def serialize(self):
+        return self.SERIALIZE_VALUE
 
 
 class Map(object):
     def __init__(self):
-        super().__init__()
         self.map = {
             Position(0, 12): Floor(),     Position(1, 12): Water(),         Position(2, 12): Floor(),     Position(3, 12): Floor(),     Position(4, 12): Floor(),     Position(5, 12): Floor(),     Position(6, 12): Floor(),     Position(7, 12): Floor(),     Position(8, 12): Floor(),     Position(9, 12): Floor(),     Position(10, 12): Floor(),        Position(11, 12): Floor(),    Position(12, 12): Floor(),
             Position(0, 11): Water(),     Position(1, 11): Floor(),         Position(2, 11): Water(),     Position(3, 11): Floor(),     Position(4, 11): Floor(),     Position(5, 11): Floor(),     Position(6, 11): Floor(),     Position(7, 11): Floor(),     Position(8, 11): Floor(),     Position(9, 11): Floor(),     Position(10, 11): Floor(),        Position(11, 11): Floor(),    Position(12, 11): Floor(),
@@ -28,14 +34,10 @@ class Map(object):
             Position(0, 1): Water(),      Position(1, 1): Floor(),          Position(2, 1): Water(),      Position(3, 1): Floor(),      Position(4, 1): Floor(),      Position(5, 1): Floor(),      Position(6, 1): Floor(),      Position(7, 1): Floor(),      Position(8, 1): Floor(),      Position(9, 1): Floor(),      Position(10, 1): Floor(),         Position(11, 1): Floor(),     Position(12, 1): Floor(),
             Position(0, 0): Water(),      Position(1, 0): Water(),          Position(2, 0): Water(),      Position(3, 0): Floor(),      Position(4, 0): Floor(),      Position(5, 0): Floor(),      Position(6, 0): Floor(),      Position(7, 0): Floor(),      Position(8, 0): Floor(),      Position(9, 0): Floor(),      Position(10, 0): Floor(),         Position(11, 0): Water(),     Position(12, 0): Floor(),
         }
-        self.FIELD_SIZE = math.sqrt(len(self.map)) - 1
 
-
-    def check_boundaries(self, pos: Position):
-        if not (pos.x <= self.FIELD_SIZE and pos.y <= self.FIELD_SIZE):
-            print('Out of boundaries: ', pos.x, pos.y)
-            raise NotInGameField
-
+    def serialize(self):
+        return json.dumps({k.serialize(): v.serialize()
+                          for k, v in self.map.items()})
 
     def clicked(self, pos: Position):
         pass

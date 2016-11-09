@@ -8,6 +8,12 @@ class Position(object):
         self.x = x
         self.y = y
 
+    def serialize(self):
+        return "({},{})".format(self.x, self.y)
+
+    def __str__(self):
+        return '({} {})'.format(self.x, self.y)
+
     def __hash__(self):
         return hash((self.x, self.y,))
 
@@ -15,4 +21,4 @@ class Position(object):
         return self.x == other.x and self.y == other.y
 
     def __repr__(self):
-        return '({} {})'.format(self.x, self.y)
+        return self.serialize()
