@@ -133,7 +133,6 @@ class Enemy(Drawable):
 
 class GameFieldManager(object):
     def __init__(self, mp: Map):
-        self.default_value = 0
         self.objs = {
             Position(6, 9): Enemy(),    Position(1, 1): Character(),
         }
@@ -146,9 +145,9 @@ class GameFieldManager(object):
                 tile.draw(pos)
 
     def move(self, frm: Position, to: Position):
-        tmp = self.objs[frm]
-        self.objs[frm] = self.default_value
-        self.objs[to] = tmp
+        obj = self.objs[frm]
+        del self.objs[frm]
+        self.objs[to] = obj
 
     def get_selected_object_position(self):
         for pos, tile in self.objs.items():
