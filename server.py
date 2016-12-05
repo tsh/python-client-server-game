@@ -1,7 +1,14 @@
+import json
 import tornado
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
+
+from messages import Message
+
+
+map = [[0,1],
+       [1,0]]
 
 
 class Application(tornado.web.Application):
@@ -18,7 +25,8 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         print("WebSocket opened")
 
     def on_message(self, message):
-        self.write_message(u"You said: " + message)
+        if message == Message.GET_MAP:
+            self.write_message(json.dumps(map))
 
     def on_close(self):
         print("WebSocket closed")
