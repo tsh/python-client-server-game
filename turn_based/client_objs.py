@@ -1,24 +1,61 @@
 import math
-import json
-from common import Position, NotInGameField
+
+import pyglet
+from turn_based.common import Position, NotInGameField
 
 
-class Floor(object):
-    SERIALIZE_VALUE = 'Floor'
+class Drawable(object):
+    SIZE = 48
 
-    def serialize(self):
-        return self.SERIALIZE_VALUE
+    def draw(self, pos: Position):
+        x, y = self.get_screen_coord(pos)
+        self._draw_rect(x, y, self.SIZE, self.SIZE, self.color)
+
+    def _draw_rect(self, x, y, width, height, color):
+        image_pattern = pyglet.image.SolidColorImagePattern(color=color)
+        image = image_pattern.create_image(width, height)
+        image.blit(x, y)
+
+    @classmethod
+    def get_clicked_tile_position(cls, x, y):
+        """ Transforms screen coordinate `x` and `y` to tile clicked tile """
+        tx = math.floor(x / cls.SIZE)
+        ty = math.floor(y / cls.SIZE)
+        return Position(tx, ty)
+
+    @classmethod
+    def get_screen_coord(cls, pos: Position):
+        """ Transforms tile position to screen coordinates """
+        x = pos.x * cls.SIZE
+        y = pos.y * cls.SIZE
+        return x, y
 
 
-class Water(object):
-    SERIALIZE_VALUE = 'Water'
+class Floor(Drawable):
+    def __init__(self):
+        self.color = (211, 211, 211, 0)
 
-    def serialize(self):
-        return self.SERIALIZE_VALUE
+
+class Water(Drawable):
+    def __init__(self):
+        self.color = (0, 0, 250, 0)
+
+
+class Decoder(object):
+    CLASS_LOAD = {
+        'Floor': Floor,
+        'Water': Water
+    }
+
+    @classmethod
+    def load(cls, data):
+        Class = cls.CLASS_LOAD[data]
+        return Class()
 
 
 class Map(object):
     def __init__(self):
+        super().__init__()
         self.map = {
             Position(0, 12): Floor(),     Position(1, 12): Water(),         Position(2, 12): Floor(),     Position(3, 12): Floor(),     Position(4, 12): Floor(),     Position(5, 12): Floor(),     Position(6, 12): Floor(),     Position(7, 12): Floor(),     Position(8, 12): Floor(),     Position(9, 12): Floor(),     Position(10, 12): Floor(),        Position(11, 12): Floor(),    Position(12, 12): Floor(),
             Position(0, 11): Water(),     Position(1, 11): Floor(),         Position(2, 11): Water(),     Position(3, 11): Floor(),     Position(4, 11): Floor(),     Position(5, 11): Floor(),     Position(6, 11): Floor(),     Position(7, 11): Floor(),     Position(8, 11): Floor(),     Position(9, 11): Floor(),     Position(10, 11): Floor(),        Position(11, 11): Floor(),    Position(12, 11): Floor(),
@@ -34,15 +71,106 @@ class Map(object):
             Position(0, 1): Water(),      Position(1, 1): Floor(),          Position(2, 1): Water(),      Position(3, 1): Floor(),      Position(4, 1): Floor(),      Position(5, 1): Floor(),      Position(6, 1): Floor(),      Position(7, 1): Floor(),      Position(8, 1): Floor(),      Position(9, 1): Floor(),      Position(10, 1): Floor(),         Position(11, 1): Floor(),     Position(12, 1): Floor(),
             Position(0, 0): Water(),      Position(1, 0): Water(),          Position(2, 0): Water(),      Position(3, 0): Floor(),      Position(4, 0): Floor(),      Position(5, 0): Floor(),      Position(6, 0): Floor(),      Position(7, 0): Floor(),      Position(8, 0): Floor(),      Position(9, 0): Floor(),      Position(10, 0): Floor(),         Position(11, 0): Water(),     Position(12, 0): Floor(),
         }
+        self.FIELD_SIZE = math.sqrt(len(self.map)) - 1
 
-    def serialize(self):
-        return json.dumps({k.serialize(): v.serialize()
-                          for k, v in self.map.items()})
+    def draw(self):
+        for pos, tile in self.map.items():
+            tile.draw(pos)
+
+    def check_boundaries(self, pos: Position):
+        if not (pos.x <= self.FIELD_SIZE and pos.y <= self.FIELD_SIZE):
+            print('Out of boundaries: ', pos.x, pos.y)
+            raise NotInGameField
 
     def clicked(self, pos: Position):
         pass
 
-frozen = Map().serialize()
+    @classmethod
+    def deserialize(cls, data):
+        import json
+        dc = json.loads(data)
+        map = {}
+        for k,v in dc.items():
+            map[Position.deserialize(k)] = Decoder.load(v)
 
-from client_objs import Map as MP
-MP().deserialize(frozen)
+
+class Character(Drawable):
+    def __init__(self):
+        super().__init__()
+        self.is_selected = False
+        self.color = (0, 255, 0, 0)
+        self.selection_color = (128, 0, 128, 0)
+        self.shrink_factor = 5
+
+    def toggle_selection(self):
+        self.is_selected = not self.is_selected
+
+    def draw(self, pos: Position):
+        x, y = self.get_screen_coord(pos)
+        size = self.SIZE - self.shrink_factor * 2
+        if self.is_selected:
+            self._draw_rect(x + self.shrink_factor , y + self.shrink_factor , size, size, self.color)
+            self._draw_rect(x + self.shrink_factor + int(Drawable.SIZE * 0.2), y + self.shrink_factor + int(Drawable.SIZE * 0.2),
+                            size - int(Drawable.SIZE * 0.4), size - int(Drawable.SIZE * 0.4),
+                            self.selection_color)
+        else:
+            self._draw_rect(x + self.shrink_factor , y + self.shrink_factor , size, size, (0, 255, 0, 0))
+
+
+class Enemy(Drawable):
+    def __init__(self):
+        self.color = (255, 0, 0, 0)
+        self.shrink_factor = 5
+
+    def toggle_selection(self):
+        pass
+
+    def draw(self, pos: Position):
+        x, y = self.get_screen_coord(pos)
+        size = self.SIZE - self.shrink_factor * 2
+        self._draw_rect(x + self.shrink_factor, y + self.shrink_factor, size, size, self.color)
+
+
+class GameFieldManager(object):
+    def __init__(self, mp: Map):
+        self.objs = {
+            Position(6, 9): Enemy(),    Position(1, 1): Character(),
+        }
+        self.map = mp
+
+    def draw(self):
+        self.map.draw()
+        for pos, tile in self.objs.items():
+            if not isinstance(tile, int):
+                tile.draw(pos)
+
+    def move(self, frm: Position, to: Position):
+        obj = self.objs[frm]
+        del self.objs[frm]
+        self.objs[to] = obj
+
+    def get_selected_object_position(self):
+        for pos, tile in self.objs.items():
+            try:
+                if tile.is_selected:
+                    return pos
+            except AttributeError:
+                pass
+        return None
+
+    def clicked(self, clicked_pos: Position):
+        try:
+            self.map.check_boundaries(clicked_pos)
+        except NotInGameField:
+            return
+        try:
+            clicked = self.objs[clicked_pos]
+        except KeyError:
+            # click on empty field.
+            # if we have selected object, move selected
+            selected_obj_pos = self.get_selected_object_position()
+            if selected_obj_pos:
+                self.move(selected_obj_pos, clicked_pos)
+        else:
+            # select clicked object
+            clicked.toggle_selection()

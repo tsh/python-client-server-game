@@ -1,8 +1,7 @@
-import math
 import pyglet
 from pyglet.window import mouse
 
-from client_objs import GameFieldManager, Map, Drawable
+from turn_based.client_objs import GameFieldManager, Map, Drawable
 
 
 class Nexus(object):
